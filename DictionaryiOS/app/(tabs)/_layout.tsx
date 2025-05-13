@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { Tabs } from 'expo-router';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
+// Define tab screen type
+type TabScreen = {
+  name: string;
+  title: string;
+  icon: JSX.Element;
+};
+
 // Tab configuration
-const tabScreens = [
+const tabScreens: TabScreen[] = [
   {
     name: 'home/index',
     title: 'Home',
@@ -26,6 +33,24 @@ const tabScreens = [
   },
 ];
 
+// Extract styles into constants
+const tabBarStyle = {
+  backgroundColor: '#fff',
+  borderTopColor: '#E5E7EB',
+  borderTopWidth: 0.5,
+  height: 65,
+  paddingTop: 5,
+};
+
+const tabBarLabelStyle = {
+  fontSize: 11,
+  fontWeight: 'bold',
+};
+
+// Function to render tab icons
+const renderTabIcon = (icon: JSX.Element, color: string, size: number) =>
+  React.cloneElement(icon, { color, size });
+
 // Tab layout component
 export default function TabLayout() {
   return (
@@ -34,24 +59,16 @@ export default function TabLayout() {
         headerShown: false,
         tabBarActiveTintColor: '#1F2937',
         tabBarInactiveTintColor: '#9CA3AF',
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
-        tabBarStyle: {
-          backgroundColor: '#fff',
-          borderTopColor: '#E5E7EB',
-          borderTopWidth: 0.5,
-          height: 65,
-          paddingTop: 5,
-        },
+        tabBarStyle,
       }}
     >
       {tabScreens.map(({ name, title, icon }) => (
         <Tabs.Screen
           key={name}
-          name={name} // Use just the screen name
+          name={name}
           options={{
             title,
-            tabBarIcon: ({ color, size }) =>
-              React.cloneElement(icon, { color, size }), // dynamically set color and size
+            tabBarIcon: ({ color, size }) => renderTabIcon(icon, color, size),
           }}
         />
       ))}

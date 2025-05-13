@@ -6,10 +6,13 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import words from '../../../assets/data/words.json';
+
+const { width } = Dimensions.get('window');
 
 const quotes = [
   'The best way to get started is to quit talking and begin doing.',
@@ -60,7 +63,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           {searchOpen ? (
@@ -70,9 +73,10 @@ const HomeScreen = () => {
               value={searchText}
               onChangeText={setSearchText}
               autoFocus
+              placeholderTextColor="#9CA3AF"
             />
           ) : (
-            <Text style={styles.title}>Dictionary</Text>
+            <Text style={styles.title}>📘 WordWise</Text>
           )}
 
           <View style={styles.headerIcons}>
@@ -88,7 +92,7 @@ const HomeScreen = () => {
         {/* Word of the Day */}
         <View style={styles.wordCard}>
           <View style={styles.cardHeader}>
-            <Text style={styles.sectionTitle}>Word of the Day</Text>
+            <Text style={styles.sectionTitle}>✨ Word of the Day</Text>
             {renderSaveButton()}
           </View>
           <Text style={styles.wordTitle}>{words[0].word}</Text>
@@ -96,16 +100,14 @@ const HomeScreen = () => {
         </View>
 
         {/* Daily Quote */}
-        <View style={styles.wordCard}>
-          <Text style={styles.sectionTitle}>Daily Quote</Text>
-          <Text style={styles.quoteText}>
-            "{quote}"
-          </Text>
+        <View style={styles.quoteCard}>
+          <Text style={styles.sectionTitle}>🧠 Daily Quote</Text>
+          <Text style={styles.quoteText}>"{quote}"</Text>
         </View>
 
         {/* Trending Words */}
         <View>
-          <Text style={styles.sectionTitle}>Trending Words</Text>
+          <Text style={styles.sectionTitle}>🔥 Trending Words</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.trendingScroll}>
             {trendingWords.map((item) => (
               <View key={item.id} style={styles.trendingCard}>
@@ -122,9 +124,9 @@ const HomeScreen = () => {
         {/* Search Results */}
         {searchText.length > 0 && (
           <View style={{ marginTop: 24 }}>
-            <Text style={styles.sectionTitle}>Search Results</Text>
+            <Text style={styles.sectionTitle}>🔍 Search Results</Text>
             {filteredWords.length === 0 ? (
-              <Text style={{ color: '#6B7280' }}>No matches found.</Text>
+              <Text style={{ color: '#9CA3AF', fontStyle: 'italic' }}>No matches found.</Text>
             ) : (
               filteredWords.map((item) => (
                 <View key={item.id} style={styles.trendingCard}>
@@ -151,23 +153,23 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F3F4F6',
   },
   container: {
     padding: 16,
-    paddingBottom: 24,
+    paddingBottom: 36,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
     marginTop: 16,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#1F2937',
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#111827',
   },
   headerIcons: {
     flexDirection: 'row',
@@ -178,23 +180,29 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderColor: '#D1D5DB',
     paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     fontSize: 16,
-    flexGrow: 1,
+    color: '#1F2937',
   },
   wordCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 20,
+    padding: 24,
     marginBottom: 24,
-    elevation: 3,
+    elevation: 4,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowRadius: 6,
+    shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
+  },
+  quoteCard: {
+    backgroundColor: '#E0F2FE',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 24,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -202,48 +210,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#1F2937',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#111827',
     marginBottom: 8,
   },
   wordTitle: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#1F2937',
     marginTop: 12,
   },
   wordDefinition: {
     marginTop: 8,
     fontSize: 16,
-    color: '#6B7280',
+    color: '#4B5563',
   },
   quoteText: {
     marginTop: 12,
     fontSize: 16,
     fontStyle: 'italic',
-    color: '#374151',
+    color: '#1E3A8A',
   },
   trendingScroll: {
     flexDirection: 'row',
     marginTop: 12,
   },
   trendingCard: {
-    width: 180,
+    width: width * 0.6,
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: 16,
+    padding: 16,
     marginRight: 16,
     borderColor: '#E5E7EB',
     borderWidth: 1,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
   },
   trendingTitle: {
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '600',
     color: '#1F2937',
   },
   trendingDesc: {
@@ -253,7 +261,7 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     padding: 6,
-    borderRadius: 6,
-    backgroundColor: '#F3F4F6',
+    borderRadius: 8,
+    backgroundColor: '#F9FAFB',
   },
 });
