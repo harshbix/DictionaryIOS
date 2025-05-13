@@ -1,26 +1,18 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
   FlatList,
-  Pressable,
+  TouchableOpacity,
   ScrollView,
   Modal,
-  LayoutAnimation,
-  Platform,
-  UIManager,
-  Animated,
-  Easing,
+  Pressable,
+  Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import LinearGradient from 'react-native-linear-gradient';
 import wordsData from '../../../assets/data/words.json';
-
-if (Platform.OS === 'android') {
-  UIManager.setLayoutAnimationEnabledExperimental?.(true);
-}
 
 type Word = {
   id: number;
@@ -31,230 +23,249 @@ type Word = {
   example?: string;
 };
 
-const FILTERS = ['All', 'A-Z', 'Z-A', 'Short Words', 'Long Words'];
+const { height } = Dimensions.get('window');
+
+const filterOptions = ['All', 'A-Z', 'Z-A', 'Short Words', 'Long Words'];
 
 const WordsScreen: React.FC = () => {
   const [searchText, setSearchText] = useState<string>('');
   const [filter, setFilter] = useState<string>('All');
-  const [selected, setSelected] = useState<Word | null>(null);
-  const [visible, setVisible] = useState<boolean>(false);
-  const slideAnim = useRef(new Animated.Value(0)).current;
-
-  const openModal = (word: Word) => {
-    setSelected(word);
-    setVisible(true);
-    Animated.timing(slideAnim, {
-      toValue: 1,
-      duration: 300,
-      easing: Easing.out(Easing.ease),
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const closeModal = () => {
-    Animated.timing(slideAnim, {
-      toValue: 0,
-      duration: 200,
-      easing: Easing.in(Easing.ease),
-      useNativeDriver: true,
-    }).start(() => {
-      setVisible(false);
-      setSelected(null);
-    });
-  };
+  const [selectedWord, setSelectedWord] = useState<Word | null>(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const filteredWords = wordsData
-    .filter(w => w.word.toLowerCase().includes(searchText.toLowerCase()))
-    .sort((a, b) => {
+    .filter((w: Word) => w.word.toLowerCase().includes(searchText.toLowerCase()))
+    .sort((a: Word, b: Word) => {
       if (filter === 'A-Z') return a.word.localeCompare(b.word);
       if (filter === 'Z-A') return b.word.localeCompare(a.word);
       return 0;
     })
-    .filter(w => {
+    .filter((w: Word) => {
       if (filter === 'Short Words') return w.word.length <= 6;
       if (filter === 'Long Words') return w.word.length >= 9;
       return true;
     });
 
-  const handleFilter = (f: string) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setFilter(f);
+  const handleWordPress = (word: Word) => {
+    setSelectedWord(word);
+    setModalVisible(true);
   };
 
-  const renderCard = ({ item }: { item: Word }) => {
-    const scale = useRef(new Animated.Value(1)).current;
-    return (
-      <Pressable
-        onPress={() => openModal(item)}
-        onPressIn={() => Animated.spring(scale, { toValue: 0.96, useNativeDriver: true }).start()}
-        onPressOut={() => Animated.spring(scale, { toValue: 1, useNativeDriver: true }).start()}
-        style={{ marginBottom: 12 }}
-      >
-        <Animated.View style={[styles.card, { transform: [{ scale }] }]}>
-          <Text style={styles.wordText}>{item.word}</Text>
-        </Animated.View>
-      </Pressable>
-    );
-  };
+  const renderWordCard = ({ item }: { item: Word }) => (
+    <TouchableOpacity style={styles.card} onPress={() => handleWordPress(item)}>
+      <View style={styles.cardContent}>
+        <Ionicons name="book-outline" size={24} color="#3B82F6" style={{ marginRight: 10 }} />
+        <Text style={styles.wordText}>{item.word}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
       {/* Search */}
-      <View style={styles.searchBox}>
-        <Ionicons name="search" size={20} color="#666" />
+      <View style={styles.searchContainer}>
+        <Ionicons name="search" size={20} color="#888" />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search words..."
-          placeholderTextColor="#999"
+          placeholder="Search for a word..."
           value={searchText}
           onChangeText={setSearchText}
         />
-        {searchText ? (
-          <Pressable onPress={() => setSearchText('')}>
-            <Ionicons name="close-circle" size={18} color="#666" />
-          </Pressable>
-        ) : null}
+        {searchText.length > 0 && (
+          <TouchableOpacity onPress={() => setSearchText('')}>
+            <Ionicons name="close-circle" size={20} color="#888" />
+          </TouchableOpacity>
+        )}
       </View>
 
-      {/* Filter Chips */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.chipsContainer}
-      >
-        {FILTERS.map(f => (
-          <Pressable
-            key={f}
-            onPress={() => handleFilter(f)}
-            style={[
-              styles.chip,
-              filter === f && styles.chipActive,
-            ]}
+      {/* Filter */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
+        {filterOptions.map((option) => (
+          <TouchableOpacity
+            key={option}
+            style={[styles.filterButton, filter === option && styles.activeFilter]}
+            onPress={() => setFilter(option)}
           >
-            <Text style={[styles.chipText, filter === f && styles.chipTextActive]}>
-              {f}
+            <Text style={[styles.filterText, filter === option && styles.activeFilterText]}>
+              {option}
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 
       {/* Word List */}
       <FlatList
         data={filteredWords}
-        keyExtractor={w => w.id.toString()}
-        renderItem={renderCard}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={styles.list}
+        renderItem={renderWordCard}
       />
 
-      {/* Bottom-Sheet Modal */}
-      <Modal transparent visible={visible} animationType="none">
-        <Pressable style={styles.overlay} onPress={closeModal} />
-        <Animated.View
-          style={[
-            styles.bottomSheet,
-            {
-              transform: [
-                {
-                  translateY: slideAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [400, 0],
-                  }),
-                },
-              ],
-            },
-          ]}
+      {/* Modern Modal */}
+      {selectedWord && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
         >
-          <LinearGradient
-            colors={['#3B82F6', '#60A5FA']}
-            style={styles.sheetHeader}
-          >
-            <Text style={styles.sheetTitle}>{selected?.word}</Text>
-          </LinearGradient>
-          <View style={styles.sheetContent}>
-            <Text style={styles.sheetLabel}>Part of Speech:</Text>
-            <Text style={styles.sheetText}>{selected?.partOfSpeech || '—'}</Text>
-            <Text style={styles.sheetLabel}>Meaning:</Text>
-            <Text style={styles.sheetText}>{selected?.meaning || '—'}</Text>
-            <Text style={styles.sheetLabel}>Synonyms:</Text>
-            <Text style={styles.sheetText}>
-              {selected?.synonyms?.join(', ') || '—'}
-            </Text>
-            <Text style={styles.sheetLabel}>Example:</Text>
-            <Text style={styles.sheetText}>{selected?.example || '—'}</Text>
+          <View style={styles.modalOverlay}>
+            <View style={styles.bottomSheet}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalWord}>{selectedWord.word}</Text>
+                <Pressable onPress={() => setModalVisible(false)}>
+                  <Ionicons name="close" size={24} color="#555" />
+                </Pressable>
+              </View>
+
+              <View style={styles.modalBody}>
+                <View style={styles.infoRow}>
+                  <Ionicons name="reader-outline" size={18} color="#888" />
+                  <Text style={styles.infoText}>
+                    <Text style={styles.infoLabel}>Part of Speech:</Text>{' '}
+                    {selectedWord.partOfSpeech || 'N/A'}
+                  </Text>
+                </View>
+
+                <View style={styles.infoRow}>
+                  <Ionicons name="bulb-outline" size={18} color="#888" />
+                  <Text style={styles.infoText}>
+                    <Text style={styles.infoLabel}>Meaning:</Text>{' '}
+                    {selectedWord.meaning || 'N/A'}
+                  </Text>
+                </View>
+
+                <View style={styles.infoRow}>
+                  <Ionicons name="swap-horizontal-outline" size={18} color="#888" />
+                  <Text style={styles.infoText}>
+                    <Text style={styles.infoLabel}>Synonyms:</Text>{' '}
+                    {selectedWord.synonyms?.join(', ') || 'N/A'}
+                  </Text>
+                </View>
+
+                <View style={styles.infoRow}>
+                  <Ionicons name="chatbox-ellipses-outline" size={18} color="#888" />
+                  <Text style={styles.infoText}>
+                    <Text style={styles.infoLabel}>Example:</Text>{' '}
+                    {selectedWord.example || 'N/A'}
+                  </Text>
+                </View>
+              </View>
+            </View>
           </View>
-          <Pressable style={styles.hideButton} onPress={closeModal}>
-            <Text style={styles.hideText}>Hide</Text>
-          </Pressable>
-        </Animated.View>
-      </Modal>
+        </Modal>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F2F4F8', padding: 16 },
-  searchBox: {
+  container: {
+    flex: 1,
+    backgroundColor: '#F3F4F6',
+    padding: 16,
+  },
+  searchContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
     marginBottom: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
     elevation: 2,
   },
-  searchInput: { flex: 1, marginHorizontal: 8, fontSize: 16, color: '#333' },
-
-  chipsContainer: { paddingVertical: 8 },
-  chip: {
-    backgroundColor: '#E0E7FF',
-    paddingHorizontal: 14,
-    paddingVertical: 6,
+  searchInput: {
+    flex: 1,
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  filterContainer: {
+    marginBottom: 10,
+  },
+  filterButton: {
+    backgroundColor: '#E5E7EB',
     borderRadius: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
     marginRight: 8,
   },
-  chipActive: { backgroundColor: '#3B82F6' },
-  chipText: { color: '#1E3A8A', fontSize: 14 },
-  chipTextActive: { color: '#FFF', fontWeight: '600' },
-
+  activeFilter: {
+    backgroundColor: '#3B82F6',
+  },
+  filterText: {
+    color: '#111827',
+  },
+  activeFilterText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  list: {
+    paddingBottom: 100,
+  },
   card: {
-    backgroundColor: '#FFF',
-    borderRadius: 16,
-    padding: 16,
-    elevation: 3,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    marginBottom: 10,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  wordText: { fontSize: 18, fontWeight: '600', color: '#111' },
-
-  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' },
-  bottomSheet: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    backgroundColor: '#FFF',
-    elevation: 10,
-  },
-  sheetHeader: {
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    padding: 16,
-  },
-  sheetTitle: { color: '#FFF', fontSize: 22, fontWeight: '700', textAlign: 'center' },
-  sheetContent: { padding: 16 },
-  sheetLabel: { fontWeight: '600', marginTop: 12, color: '#333' },
-  sheetText: { fontSize: 16, color: '#555', marginTop: 4 },
-  hideButton: {
-    padding: 14,
+  cardContent: {
+    flexDirection: 'row',
     alignItems: 'center',
-    borderTopWidth: 1,
-    borderColor: '#EEE',
   },
-  hideText: { color: '#3B82F6', fontWeight: '600', fontSize: 16 },
+  wordText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#1F2937',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  bottomSheet: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    minHeight: height * 0.4,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  modalWord: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1E40AF',
+  },
+  modalBody: {
+    gap: 10,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  infoText: {
+    fontSize: 16,
+    color: '#374151',
+    flex: 1,
+    flexWrap: 'wrap',
+  },
+  infoLabel: {
+    fontWeight: '600',
+  },
 });
 
 export default WordsScreen;

@@ -32,7 +32,7 @@
     "example": "The company values cultural and gender diversity."
   },
   {
-    "id": 8,
+    "id": 5,
     "word": "Harmony",
     "partOfSpeech": "noun",
     "meaning": "Agreement or concord.",
@@ -40,7 +40,7 @@
     "example": "They lived together in harmony and mutual respect."
   },
   {
-    "id": 9,
+    "id": 6,
     "word": "Innovation",
     "partOfSpeech": "noun",
     "meaning": "A new method, idea, or product.",
@@ -48,7 +48,7 @@
     "example": "Innovation is key to the company's growth strategy."
   },
   {
-    "id": 10,
+    "id": 7,
     "word": "Justice",
     "partOfSpeech": "noun",
     "meaning": "Just behavior or treatment.",
@@ -56,7 +56,7 @@
     "example": "The organization fights for justice and human rights."
   },
   {
-    "id": 11,
+    "id": 8,
     "word": "Kindness",
     "partOfSpeech": "noun",
     "meaning": "The quality of being friendly, generous, and considerate.",
@@ -64,7 +64,7 @@
     "example": "Her kindness left a lasting impact on the children."
   },
   {
-    "id": 12,
+    "id": 9,
     "word": "Leadership",
     "partOfSpeech": "noun",
     "meaning": "The action of leading a group or organization.",
@@ -72,7 +72,7 @@
     "example": "Effective leadership drives team success."
   },
   {
-    "id": 13,
+    "id": 10,
     "word": "Mindfulness",
     "partOfSpeech": "noun",
     "meaning": "A mental state achieved by focusing awareness on the present moment.",
@@ -80,7 +80,7 @@
     "example": "Mindfulness helps reduce stress and improve focus."
   },
   {
-    "id": 14,
+    "id": 11,
     "word": "Nurture",
     "partOfSpeech": "verb",
     "meaning": "To care for and encourage the growth or development of.",
@@ -88,7 +88,7 @@
     "example": "Teachers nurture the talents of their students."
   },
   {
-    "id": 15,
+    "id": 12,
     "word": "Optimism",
     "partOfSpeech": "noun",
     "meaning": "Hopefulness and confidence about the future.",
@@ -96,7 +96,7 @@
     "example": "Her optimism inspired everyone during tough times."
   },
   {
-    "id": 16,
+    "id": 13,
     "word": "Passion",
     "partOfSpeech": "noun",
     "meaning": "Strong and barely controllable emotion.",
@@ -104,7 +104,7 @@
     "example": "He pursued his art with great passion."
   },
   {
-    "id": 17,
+    "id": 14,
     "word": "Quality",
     "partOfSpeech": "noun",
     "meaning": "The standard of something as measured against other things.",
@@ -112,7 +112,7 @@
     "example": "They focus on the quality of their products."
   },
   {
-    "id": 18,
+    "id": 15,
     "word": "Respect",
     "partOfSpeech": "noun",
     "meaning": "A feeling of deep admiration for someone or something.",
@@ -120,7 +120,7 @@
     "example": "Everyone deserves to be treated with respect."
   },
   {
-    "id": 19,
+    "id": 16,
     "word": "Strength",
     "partOfSpeech": "noun",
     "meaning": "The quality or state of being physically strong or mentally resilient.",
@@ -128,7 +128,7 @@
     "example": "She showed strength in the face of adversity."
   },
   {
-    "id": 20,
+    "id": 17,
     "word": "Trust",
     "partOfSpeech": "noun",
     "meaning": "Firm belief in the reliability, truth, or ability of someone or something.",
@@ -136,7 +136,7 @@
     "example": "Trust is the foundation of any strong relationship."
   },
   {
-    "id": 21,
+    "id": 18,
     "word": "Unity",
     "partOfSpeech": "noun",
     "meaning": "The state of being united or joined as a whole.",
@@ -144,7 +144,7 @@
     "example": "Unity among team members leads to success."
   },
   {
-    "id": 22,
+    "id": 19,
     "word": "Vision",
     "partOfSpeech": "noun",
     "meaning": "The ability to think about or plan the future with imagination or wisdom.",
@@ -152,7 +152,7 @@
     "example": "A leader must have a clear vision."
   },
   {
-    "id": 23,
+    "id": 20,
     "word": "Wisdom",
     "partOfSpeech": "noun",
     "meaning": "The ability to make sound judgments based on knowledge and experience.",
@@ -160,7 +160,7 @@
     "example": "She spoke with the wisdom of experience."
   },
   {
-    "id": 24,
+    "id": 21,
     "word": "Zenith",
     "partOfSpeech": "noun",
     "meaning": "The highest point reached by a celestial or other object.",
@@ -168,7 +168,7 @@
     "example": "She reached the zenith of her career."
   },
   {
-    "id": 25,
+    "id": 22,
     "word": "Ambition",
     "partOfSpeech": "noun",
     "meaning": "A strong desire to achieve success.",

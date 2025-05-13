@@ -1,5 +1,4 @@
-// Enhanced HomeScreen.js
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,46 +6,44 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  FlatList,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import wordsData from '../../../assets/data/words.json'; // adjust path as needed
+import words from '../../../assets/data/words.json';
 
 const quotes = [
-  "Words are, in my not-so-humble opinion, our most inexhaustible source of magic.",
-  "Language is the roadmap of a culture.",
-  "A different language is a different vision of life.",
-  "To have another language is to possess a second soul.",
-  "Words can inspire. And words can destroy. Choose yours well."
+  'The best way to get started is to quit talking and begin doing.',
+  'Success is not the key to happiness. Happiness is the key to success.',
+  'Push yourself, because no one else is going to do it for you.',
+  'Believe you can and you’re halfway there.',
+  'Dream it. Wish it. Do it.',
 ];
+
+const getRandomQuote = () => {
+  const index = Math.floor(Math.random() * quotes.length);
+  return quotes[index];
+};
+
+const getRandomWords = (count = 5) => {
+  const shuffled = [...words].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+};
 
 const HomeScreen = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [randomQuote, setRandomQuote] = useState('');
-  const [filteredWords, setFilteredWords] = useState([]);
+  const [quote, setQuote] = useState('');
+  const [trendingWords, setTrendingWords] = useState([]);
 
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    setRandomQuote(quotes[randomIndex]);
+    setQuote(getRandomQuote());
+    const trending = words.slice(0, 5);
+    setTrendingWords(trending.length ? trending : getRandomWords());
   }, []);
-
-  useEffect(() => {
-    if (searchText.trim() === '') {
-      setFilteredWords([]);
-    } else {
-      const results = wordsData.filter(word =>
-        word.title.toLowerCase().includes(searchText.toLowerCase())
-      );
-      setFilteredWords(results);
-    }
-  }, [searchText]);
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
     setSearchText('');
-    setFilteredWords([]);
   };
 
   const renderSaveButton = () => (
@@ -55,9 +52,16 @@ const HomeScreen = () => {
     </TouchableOpacity>
   );
 
+  const filteredWords = searchText
+    ? words.filter((w) =>
+        w.word.toLowerCase().includes(searchText.toLowerCase())
+      )
+    : [];
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Header */}
         <View style={styles.header}>
           {searchOpen ? (
             <TextInput
@@ -81,39 +85,62 @@ const HomeScreen = () => {
           </View>
         </View>
 
-        {searchOpen && filteredWords.length > 0 && (
-          <FlatList
-            data={filteredWords}
-            keyExtractor={(item, index) => item.title + index}
-            renderItem={({ item }) => (
-              <View style={styles.searchResultCard}>
-                <Text style={styles.wordTitle}>{item.title}</Text>
-                <Text style={styles.wordDefinition}>{item.definition}</Text>
-              </View>
-            )}
-          />
-        )}
-
+        {/* Word of the Day */}
         <View style={styles.wordCard}>
           <View style={styles.cardHeader}>
             <Text style={styles.sectionTitle}>Word of the Day</Text>
             {renderSaveButton()}
           </View>
-          <View>
-            <Text style={styles.wordTitle}>Petrichor</Text>
-            <Text style={styles.wordDefinition}>
-              The pleasant smell that follows rain falling on dry ground
-            </Text>
-          </View>
+          <Text style={styles.wordTitle}>{words[0].word}</Text>
+          <Text style={styles.wordDefinition}>{words[0].meaning}</Text>
         </View>
 
-        <View style={styles.quoteCard}>
+        {/* Daily Quote */}
+        <View style={styles.wordCard}>
           <Text style={styles.sectionTitle}>Daily Quote</Text>
-          <Text style={styles.quoteText}>“{randomQuote}”</Text>
+          <Text style={styles.quoteText}>
+            "{quote}"
+          </Text>
         </View>
 
-        {/* More UI sections can be added below (e.g., Recently Added, Fun Fact) */}
+        {/* Trending Words */}
+        <View>
+          <Text style={styles.sectionTitle}>Trending Words</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.trendingScroll}>
+            {trendingWords.map((item) => (
+              <View key={item.id} style={styles.trendingCard}>
+                <View style={styles.cardHeader}>
+                  <Text style={styles.trendingTitle}>{item.word}</Text>
+                  {renderSaveButton()}
+                </View>
+                <Text style={styles.trendingDesc}>{item.meaning}</Text>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
 
+        {/* Search Results */}
+        {searchText.length > 0 && (
+          <View style={{ marginTop: 24 }}>
+            <Text style={styles.sectionTitle}>Search Results</Text>
+            {filteredWords.length === 0 ? (
+              <Text style={{ color: '#6B7280' }}>No matches found.</Text>
+            ) : (
+              filteredWords.map((item) => (
+                <View key={item.id} style={styles.trendingCard}>
+                  <View style={styles.cardHeader}>
+                    <Text style={styles.trendingTitle}>{item.word}</Text>
+                    {renderSaveButton()}
+                  </View>
+                  <Text style={styles.trendingDesc}>{item.meaning}</Text>
+                  <Text style={{ color: '#9CA3AF', marginTop: 4 }}>
+                    e.g., {item.example}
+                  </Text>
+                </View>
+              ))
+            )}
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -156,6 +183,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 8,
     fontSize: 16,
+    flexGrow: 1,
   },
   wordCard: {
     backgroundColor: '#FFFFFF',
@@ -190,26 +218,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#6B7280',
   },
-  quoteCard: {
-    backgroundColor: '#EEF2FF',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 24,
-  },
   quoteText: {
-    fontStyle: 'italic',
+    marginTop: 12,
     fontSize: 16,
+    fontStyle: 'italic',
     color: '#374151',
   },
-  searchResultCard: {
-    backgroundColor: '#FFF',
+  trendingScroll: {
+    flexDirection: 'row',
+    marginTop: 12,
+  },
+  trendingCard: {
+    width: 180,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
     padding: 12,
-    borderRadius: 10,
-    marginBottom: 10,
+    marginRight: 16,
+    borderColor: '#E5E7EB',
+    borderWidth: 1,
     shadowColor: '#000',
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
+  },
+  trendingTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#1F2937',
+  },
+  trendingDesc: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 8,
   },
   saveButton: {
     padding: 6,
