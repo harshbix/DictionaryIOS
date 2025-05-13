@@ -33,7 +33,7 @@ const HomeScreen = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [quote, setQuote] = useState('');
-  const [trendingWords, setTrendingWords] = useState([]);
+  const [trendingWords, setTrendingWords] = useState<{ id: number; word: string; partOfSpeech: string; meaning: string; synonyms: string[]; example: string; }[]>([]);
 
   useEffect(() => {
     setQuote(getRandomQuote());
