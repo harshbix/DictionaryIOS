@@ -1,23 +1,55 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons'; // or 'react-native-vector-icons'
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchText, setSearchText] = useState('');
+
+  const toggleSearch = () => {
+    setSearchOpen(!searchOpen);
+    setSearchText('');
+  };
+
+  const renderSaveButton = () => (
+    <TouchableOpacity style={styles.saveButton}>
+      <Feather name="bookmark" size={18} color="#1F2937" />
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        {/* Header */}
+        {/* Header with Search */}
         <View style={styles.header}>
-          <Feather name="search" size={20} color="black" />
-          <MaterialCommunityIcons name="microphone-outline" size={20} color="black" />
+          {searchOpen ? (
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search words..."
+              value={searchText}
+              onChangeText={setSearchText}
+              autoFocus
+            />
+          ) : (
+            <Text style={styles.title}>Dictionary</Text>
+          )}
+
+          <View style={styles.headerIcons}>
+            <TouchableOpacity onPress={toggleSearch} style={styles.iconWrapper}>
+              <Feather name={searchOpen ? 'x' : 'search'} size={20} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconWrapper}>
+              <MaterialCommunityIcons name="microphone-outline" size={20} color="black" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Word of the Day Section */}
         <View style={styles.wordCard}>
           <View style={styles.cardHeader}>
             <Text style={styles.sectionTitle}>Word of the Day</Text>
-            <View style={styles.circle} />
+            {renderSaveButton()}
           </View>
           <View>
             <Text style={styles.wordTitle}>Petrichor</Text>
@@ -38,7 +70,10 @@ const HomeScreen = () => {
               { title: 'Luminescent', def: 'Emitting light' }
             ].map((item, index) => (
               <View key={index} style={styles.trendingCard}>
-                <Text style={styles.trendingTitle}>{item.title}</Text>
+                <View style={styles.cardHeader}>
+                  <Text style={styles.trendingTitle}>{item.title}</Text>
+                  {renderSaveButton()}
+                </View>
                 <Text style={styles.trendingDesc}>{item.def}</Text>
               </View>
             ))}
@@ -55,18 +90,38 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#F9FAFB',
-    paddingTop: 20,
   },
   container: {
     padding: 16,
     paddingBottom: 24,
   },
   header: {
-    marginTop: 20,
-    marginBottom: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 12,
+    marginTop: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  iconWrapper: {
+    marginLeft: 12,
+  },
+  searchInput: {
+    flex: 1,
+    borderBottomWidth: 1,
+    borderColor: '#D1D5DB',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    fontSize: 16,
+    flexGrow: 1,
   },
   wordCard: {
     backgroundColor: '#FFFFFF',
@@ -87,28 +142,19 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
-    fontFamily: 'Poppins',
     color: '#1F2937',
     marginBottom: 8,
-  },
-  circle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#F3F4F6',
   },
   wordTitle: {
     fontSize: 22,
     fontWeight: '600',
     color: '#1F2937',
     marginTop: 12,
-    fontFamily: 'Poppins',
   },
   wordDefinition: {
     marginTop: 8,
     fontSize: 16,
     color: '#6B7280',
-    fontFamily: 'Inter',
   },
   trendingScroll: {
     flexDirection: 'row',
@@ -131,12 +177,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: '#1F2937',
-    fontFamily: 'Poppins',
   },
   trendingDesc: {
     fontSize: 14,
     color: '#6B7280',
-    fontFamily: 'Inter',
     marginTop: 8,
+  },
+  saveButton: {
+    padding: 6,
+    borderRadius: 6,
+    backgroundColor: '#F3F4F6',
   },
 });
