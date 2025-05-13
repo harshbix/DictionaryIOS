@@ -1,89 +1,531 @@
 [
-    { "id": 91, "word": "Achievement" },
-    { "id": 31, "word": "Adventure" },
-    { "id": 25, "word": "Ambition" },
-    { "id": 92, "word": "Altruism" },
-    { "id": 93, "word": "Aspiration" },
-    { "id": 1, "word": "Abundance" },
-    { "id": 26, "word": "Balance" },
-    { "id": 95, "word": "Brilliance" },
-    { "id": 2, "word": "Bravery" },
-    { "id": 96, "word": "Calmness" },
-    { "id": 43, "word": "Charity" },
-    { "id": 97, "word": "Cheerfulness" },
-    { "id": 3, "word": "Clarity" },
-    { "id": 98, "word": "Collaboration" },
-    { "id": 99, "word": "Commitment" },
-    { "id": 36, "word": "Compassion" },
-    { "id": 100, "word": "Confidence" },
-    { "id": 32, "word": "Courage" },
-    { "id": 49, "word": "Curiosity" },
-    { "id": 50, "word": "Dedication" },
-    { "id": 28, "word": "Determination" },
-    { "id": 51, "word": "Discipline" },
-    { "id": 4, "word": "Diversity" },
-    { "id": 29, "word": "Excellence" },
-    { "id": 44, "word": "Faith" },
-    { "id": 52, "word": "Enthusiasm" },
-    { "id": 53, "word": "Flexibility" },
-    { "id": 54, "word": "Forgiveness" },
-    { "id": 30, "word": "Freedom" },
-    { "id": 55, "word": "Friendship" },
-    { "id": 38, "word": "Generosity" },
-    { "id": 57, "word": "Happiness" },
-    { "id": 8, "word": "Harmony" },
-    { "id": 58, "word": "Health" },
-    { "id": 39, "word": "Hope" },
-    { "id": 59, "word": "Honesty" },
-    { "id": 45, "word": "Humility" },
-    { "id": 9, "word": "Innovation" },
-    { "id": 60, "word": "Inspiration" },
-    { "id": 10, "word": "Justice" },
-    { "id": 62, "word": "Knowledge" },
-    { "id": 11, "word": "Kindness" },
-    { "id": 63, "word": "Learning" },
-    { "id": 12, "word": "Leadership" },
-    { "id": 64, "word": "Liberty" },
-    { "id": 41, "word": "Love" },
-    { "id": 46, "word": "Loyalty" },
-    { "id": 13, "word": "Mindfulness" },
-    { "id": 65, "word": "Motivation" },
-    { "id": 14, "word": "Nurture" },
-    { "id": 66, "word": "Opportunity" },
-    { "id": 15, "word": "Optimism" },
-    { "id": 67, "word": "Perfection" },
-    { "id": 34, "word": "Perseverance" },
-    { "id": 68, "word": "Positivity" },
-    { "id": 69, "word": "Potential" },
-    { "id": 42, "word": "Peace" },
-    { "id": 37, "word": "Patience" },
-    { "id": 16, "word": "Passion" },
-    { "id": 70, "word": "Purpose" },
-    { "id": 17, "word": "Quality" },
-    { "id": 18, "word": "Respect" },
-    { "id": 71, "word": "Reliability" },
-    { "id": 35, "word": "Resilience" },
-    { "id": 72, "word": "Responsibility" },
-    { "id": 73, "word": "Security" },
-    { "id": 74, "word": "Selflessness" },
-    { "id": 75, "word": "Simplicity" },
-    { "id": 76, "word": "Sincerity" },
-    { "id": 78, "word": "Stability" },
-    { "id": 19, "word": "Strength" },
-    { "id": 79, "word": "Success" },
-    { "id": 80, "word": "Support" },
-    { "id": 81, "word": "Teamwork" },
-    { "id": 82, "word": "Tolerance" },
-    { "id": 20, "word": "Trust" },
-    { "id": 21, "word": "Unity" },
-    { "id": 84, "word": "Understanding" },
-    { "id": 22, "word": "Vision" },
-    { "id": 85, "word": "Virtue" },
-    { "id": 86, "word": "Warmth" },
-    { "id": 87, "word": "Wellness" },
-    { "id": 23, "word": "Wisdom" },
-    { "id": 88, "word": "Willpower" },
-    { "id": 89, "word": "Wonder" },
-    { "id": 24, "word": "Zenith" },
-    { "id": 90, "word": "Zeal" }
-]
+  {
+    "id": 1,
+    "word": "Abundance",
+    "partOfSpeech": "noun",
+    "meaning": "A very large quantity of something.",
+    "synonyms": ["plenty", "profusion", "wealth"],
+    "example": "She lives a life of joy and abundance."
+  },
+  {
+    "id": 2,
+    "word": "Bravery",
+    "partOfSpeech": "noun",
+    "meaning": "Courageous behavior or character.",
+    "synonyms": ["courage", "valor", "fearlessness"],
+    "example": "The firefighter showed great bravery during the rescue."
+  },
+  {
+    "id": 3,
+    "word": "Clarity",
+    "partOfSpeech": "noun",
+    "meaning": "The quality of being clear and easy to understand.",
+    "synonyms": ["clearness", "lucidity", "transparency"],
+    "example": "Her clarity in communication made the presentation effective."
+  },
+  {
+    "id": 4,
+    "word": "Diversity",
+    "partOfSpeech": "noun",
+    "meaning": "The state of being diverse; variety.",
+    "synonyms": ["variety", "multiplicity", "difference"],
+    "example": "The company values cultural and gender diversity."
+  },
+  {
+    "id": 8,
+    "word": "Harmony",
+    "partOfSpeech": "noun",
+    "meaning": "Agreement or concord.",
+    "synonyms": ["unity", "accord", "peace"],
+    "example": "They lived together in harmony and mutual respect."
+  },
+  {
+    "id": 9,
+    "word": "Innovation",
+    "partOfSpeech": "noun",
+    "meaning": "A new method, idea, or product.",
+    "synonyms": ["invention", "novelty", "advancement"],
+    "example": "Innovation is key to the company's growth strategy."
+  },
+  {
+    "id": 10,
+    "word": "Justice",
+    "partOfSpeech": "noun",
+    "meaning": "Just behavior or treatment.",
+    "synonyms": ["fairness", "equity", "righteousness"],
+    "example": "The organization fights for justice and human rights."
+  },
+  {
+    "id": 11,
+    "word": "Kindness",
+    "partOfSpeech": "noun",
+    "meaning": "The quality of being friendly, generous, and considerate.",
+    "synonyms": ["compassion", "generosity", "benevolence"],
+    "example": "Her kindness left a lasting impact on the children."
+  },
+  {
+    "id": 12,
+    "word": "Leadership",
+    "partOfSpeech": "noun",
+    "meaning": "The action of leading a group or organization.",
+    "synonyms": ["guidance", "command", "direction"],
+    "example": "Effective leadership drives team success."
+  },
+  {
+    "id": 13,
+    "word": "Mindfulness",
+    "partOfSpeech": "noun",
+    "meaning": "A mental state achieved by focusing awareness on the present moment.",
+    "synonyms": ["awareness", "attention", "consciousness"],
+    "example": "Mindfulness helps reduce stress and improve focus."
+  },
+  {
+    "id": 14,
+    "word": "Nurture",
+    "partOfSpeech": "verb",
+    "meaning": "To care for and encourage the growth or development of.",
+    "synonyms": ["foster", "cultivate", "support"],
+    "example": "Teachers nurture the talents of their students."
+  },
+  {
+    "id": 15,
+    "word": "Optimism",
+    "partOfSpeech": "noun",
+    "meaning": "Hopefulness and confidence about the future.",
+    "synonyms": ["positivity", "hope", "cheerfulness"],
+    "example": "Her optimism inspired everyone during tough times."
+  },
+  {
+    "id": 16,
+    "word": "Passion",
+    "partOfSpeech": "noun",
+    "meaning": "Strong and barely controllable emotion.",
+    "synonyms": ["enthusiasm", "zeal", "fervor"],
+    "example": "He pursued his art with great passion."
+  },
+  {
+    "id": 17,
+    "word": "Quality",
+    "partOfSpeech": "noun",
+    "meaning": "The standard of something as measured against other things.",
+    "synonyms": ["excellence", "caliber", "standard"],
+    "example": "They focus on the quality of their products."
+  },
+  {
+    "id": 18,
+    "word": "Respect",
+    "partOfSpeech": "noun",
+    "meaning": "A feeling of deep admiration for someone or something.",
+    "synonyms": ["esteem", "regard", "honor"],
+    "example": "Everyone deserves to be treated with respect."
+  },
+  {
+    "id": 19,
+    "word": "Strength",
+    "partOfSpeech": "noun",
+    "meaning": "The quality or state of being physically strong or mentally resilient.",
+    "synonyms": ["power", "toughness", "resilience"],
+    "example": "She showed strength in the face of adversity."
+  },
+  {
+    "id": 20,
+    "word": "Trust",
+    "partOfSpeech": "noun",
+    "meaning": "Firm belief in the reliability, truth, or ability of someone or something.",
+    "synonyms": ["confidence", "faith", "belief"],
+    "example": "Trust is the foundation of any strong relationship."
+  },
+  {
+    "id": 21,
+    "word": "Unity",
+    "partOfSpeech": "noun",
+    "meaning": "The state of being united or joined as a whole.",
+    "synonyms": ["togetherness", "solidarity", "harmony"],
+    "example": "Unity among team members leads to success."
+  },
+  {
+    "id": 22,
+    "word": "Vision",
+    "partOfSpeech": "noun",
+    "meaning": "The ability to think about or plan the future with imagination or wisdom.",
+    "synonyms": ["foresight", "insight", "dream"],
+    "example": "A leader must have a clear vision."
+  },
+  {
+    "id": 23,
+    "word": "Wisdom",
+    "partOfSpeech": "noun",
+    "meaning": "The ability to make sound judgments based on knowledge and experience.",
+    "synonyms": ["insight", "understanding", "prudence"],
+    "example": "She spoke with the wisdom of experience."
+  },
+  {
+    "id": 24,
+    "word": "Zenith",
+    "partOfSpeech": "noun",
+    "meaning": "The highest point reached by a celestial or other object.",
+    "synonyms": ["peak", "pinnacle", "summit"],
+    "example": "She reached the zenith of her career."
+  },
+  {
+    "id": 25,
+    "word": "Ambition",
+    "partOfSpeech": "noun",
+    "meaning": "A strong desire to achieve success.",
+    "synonyms": ["aspiration", "goal", "drive"],
+    "example": "His ambition to win kept him focused."
+  },
+  {
+    "id": 26,
+    "word": "Balance",
+    "partOfSpeech": "noun",
+    "meaning": "A condition in which different elements are equal or in the correct proportions.",
+    "synonyms": ["harmony", "equilibrium", "stability"],
+    "example": "She maintained a balance between work and life."
+  },
+  {
+    "id": 28,
+    "word": "Determination",
+    "partOfSpeech": "noun",
+    "meaning": "Firmness of purpose; resoluteness.",
+    "synonyms": ["resolve", "tenacity", "perseverance"],
+    "example": "His determination helped him overcome obstacles."
+  },
+  {
+    "id": 29,
+    "word": "Excellence",
+    "partOfSpeech": "noun",
+    "meaning": "The quality of being outstanding or extremely good.",
+    "synonyms": ["superiority", "distinction", "brilliance"],
+    "example": "They strive for excellence in everything they do."
+  },
+  {
+    "id": 30,
+    "word": "Freedom",
+    "partOfSpeech": "noun",
+    "meaning": "The power or right to act, speak, or think as one wants.",
+    "synonyms": ["liberty", "independence", "autonomy"],
+    "example": "Freedom of expression is a fundamental right."
+  },
+  {
+    "id": 31,
+    "word": "Adventure",
+    "partOfSpeech": "noun",
+    "meaning": "An exciting or unusual experience.",
+    "synonyms": ["expedition", "journey", "exploration"],
+    "example": "They went on an unforgettable adventure in the mountains."
+  },
+  {
+    "id": 32,
+    "word": "Courage",
+    "partOfSpeech": "noun",
+    "meaning": "The ability to do something that frightens one.",
+    "synonyms": ["bravery", "boldness", "valor"],
+    "example": "She had the courage to speak the truth."
+  },
+  {
+    "id": 34,
+    "word": "Perseverance",
+    "partOfSpeech": "noun",
+    "meaning": "Persistence in doing something despite difficulty.",
+    "synonyms": ["endurance", "tenacity", "steadfastness"],
+    "example": "Perseverance is key to mastering new skills."
+  },
+  {
+    "id": 35,
+    "word": "Resilience",
+    "partOfSpeech": "noun",
+    "meaning": "The capacity to recover quickly from difficulties.",
+    "synonyms": ["toughness", "grit", "elasticity"],
+    "example": "She demonstrated great resilience after the setback."
+  },
+  {
+    "id": 36,
+    "word": "Compassion",
+    "partOfSpeech": "noun",
+    "meaning": "Sympathetic concern for the suffering of others.",
+    "synonyms": ["empathy", "kindness", "care"],
+    "example": "Compassion drove him to volunteer at the shelter."
+  },
+  {
+    "id": 37,
+    "word": "Patience",
+    "partOfSpeech": "noun",
+    "meaning": "The capacity to accept delay or suffering without getting angry.",
+    "synonyms": ["tolerance", "endurance", "calmness"],
+    "example": "Good things come to those who have patience."
+  },
+  {
+    "id": 38,
+    "word": "Generosity",
+    "partOfSpeech": "noun",
+    "meaning": "The quality of being kind and generous.",
+    "synonyms": ["charity", "liberality", "magnanimity"],
+    "example": "His generosity helped fund the orphanage."
+  },
+  {
+    "id": 39,
+    "word": "Hope",
+    "partOfSpeech": "noun",
+    "meaning": "A feeling of expectation and desire for something to happen.",
+    "synonyms": ["optimism", "faith", "aspiration"],
+    "example": "They held onto hope in the darkest times."
+  },
+  {
+    "id": 41,
+    "word": "Love",
+    "partOfSpeech": "noun",
+    "meaning": "An intense feeling of deep affection.",
+    "synonyms": ["affection", "devotion", "fondness"],
+    "example": "Love can bring people together in powerful ways."
+  },
+  {
+    "id": 40,
+    "word": "Joy",
+    "partOfSpeech": "noun",
+    "meaning": "A feeling of great pleasure and happiness.",
+    "synonyms": ["delight", "happiness", "elation"],
+    "example": "The joy of the children was infectious."
+  },
+{
+    "id": 42,
+    "word": "Creativity",
+    "partOfSpeech": "noun",
+    "meaning": "The use of imagination or original ideas to create something.",
+    "synonyms": ["inventiveness", "innovation", "originality"],
+    "example": "Creativity is essential in problem-solving."
+  },
+  {
+    "id": 43,
+    "word": "Gratitude",
+    "partOfSpeech": "noun",
+    "meaning": "The quality of being thankful; readiness to show appreciation.",
+    "synonyms": ["thankfulness", "appreciation", "recognition"],
+    "example": "She expressed her gratitude for the support she received."
+  },
+  {
+    "id": 44,
+    "word": "Empathy",
+    "partOfSpeech": "noun",
+    "meaning": "The ability to understand and share the feelings of another.",
+    "synonyms": ["understanding", "compassion", "sympathy"],
+    "example": "Empathy is crucial in building strong relationships."
+  },
+  {
+    "id": 45,
+    "word": "Integrity",
+    "partOfSpeech": "noun",
+    "meaning": "The quality of being honest and having strong moral principles.",
+    "synonyms": ["honesty", "uprightness", "principle"],
+    "example": "Integrity is a core value of our organization."
+  },
+    {
+      "id": 42,
+      "word": "Motivation",
+      "partOfSpeech": "noun",
+      "meaning": "The reason or reasons one has for acting or behaving in a particular way.",
+      "synonyms": ["incentive", "drive", "determination"],
+      "example": "Her motivation to succeed was evident in her hard work."
+    },
+    {
+      "id": 43,
+      "word": "Persistence",
+      "partOfSpeech": "noun",
+      "meaning": "Firm or obstinate continuance in a course of action in spite of difficulty or opposition.",
+      "synonyms": ["perseverance", "tenacity", "resolve"],
+      "example": "Persistence is crucial to overcoming obstacles."
+    },
+    {
+      "id": 44,
+      "word": "Success",
+      "partOfSpeech": "noun",
+      "meaning": "The accomplishment of an aim or purpose.",
+      "synonyms": ["achievement", "victory", "triumph"],
+      "example": "Success is the result of hard work and dedication."
+    },
+    {
+      "id": 45,
+      "word": "Gratitude",
+      "partOfSpeech": "noun",
+      "meaning": "The quality of being thankful; readiness to show appreciation for and to return kindness.",
+      "synonyms": ["thankfulness", "appreciation", "gratefulness"],
+      "example": "Expressing gratitude strengthens relationships."
+    },
+    {
+      "id": 46,
+      "word": "Empathy",
+      "partOfSpeech": "noun",
+      "meaning": "The ability to understand and share the feelings of another.",
+      "synonyms": ["understanding", "compassion", "sympathy"],
+      "example": "Empathy is essential for building strong teams."
+    },
+    {
+      "id": 47,
+      "word": "Hopefulness",
+      "partOfSpeech": "noun",
+      "meaning": "The feeling of having optimistic expectation or desire for a certain thing to happen.",
+      "synonyms": ["optimism", "expectation", "positivity"],
+      "example": "Hopefulness helped them stay motivated despite the challenges."
+    },
+    {
+      "id": 48,
+      "word": "Integrity",
+      "partOfSpeech": "noun",
+      "meaning": "The quality of being honest and having strong moral principles.",
+      "synonyms": ["honesty", "ethics", "uprightness"],
+      "example": "Integrity is the foundation of a trustworthy leader."
+    },
+    {
+      "id": 49,
+      "word": "Growth",
+      "partOfSpeech": "noun",
+      "meaning": "The process of increasing in size, development, or maturity.",
+      "synonyms": ["expansion", "development", "advancement"],
+      "example": "Personal growth is a continuous journey."
+    },
+    {
+      "id": 50,
+      "word": "Achievement",
+      "partOfSpeech": "noun",
+      "meaning": "A thing done successfully with effort, skill, or courage.",
+      "synonyms": ["accomplishment", "success", "attainment"],
+      "example": "Her achievement was celebrated by the entire team."
+    },
+    {
+      "id": 51,
+      "word": "Visionary",
+      "partOfSpeech": "noun",
+      "meaning": "A person with original ideas about what the future will or could be like.",
+      "synonyms": ["dreamer", "innovator", "prophet"],
+      "example": "He was a visionary who saw potential in the emerging technology."
+    },
+    {
+      "id": 52,
+      "word": "Determined",
+      "partOfSpeech": "adjective",
+      "meaning": "Having made a firm decision and being resolved not to change it.",
+      "synonyms": ["resolute", "persistent", "stubborn"],
+      "example": "She was determined to finish the project on time."
+    },
+    {
+      "id": 53,
+      "word": "Balance",
+      "partOfSpeech": "noun",
+      "meaning": "An even distribution of weight or amount, leading to stability.",
+      "synonyms": ["harmony", "equilibrium", "stability"],
+      "example": "Work-life balance is essential for long-term success."
+    },
+    {
+      "id": 54,
+      "word": "Fulfillment",
+      "partOfSpeech": "noun",
+      "meaning": "The achievement of something desired, promised, or predicted.",
+      "synonyms": ["satisfaction", "contentment", "achievement"],
+      "example": "Her work brought her great fulfillment and joy."
+    },
+    {
+      "id": 55,
+      "word": "Enthusiasm",
+      "partOfSpeech": "noun",
+      "meaning": "Intense and eager enjoyment, interest, or approval.",
+      "synonyms": ["excitement", "zeal", "passion"],
+      "example": "His enthusiasm for the project inspired the team."
+    },
+    {
+      "id": 56,
+      "word": "Empowerment",
+      "partOfSpeech": "noun",
+      "meaning": "Authority or power given to someone to do something.",
+      "synonyms": ["authorization", "empowerment", "influence"],
+      "example": "She sought empowerment to take charge of her life."
+    },
+    {
+      "id": 57,
+      "word": "Selflessness",
+      "partOfSpeech": "noun",
+      "meaning": "The quality of putting others' needs before one's own.",
+      "synonyms": ["altruism", "generosity", "compassion"],
+      "example": "Her selflessness was evident in her community service."
+    },
+    {
+      "id": 58,
+      "word": "Serenity",
+      "partOfSpeech": "noun",
+      "meaning": "The state of being calm, peaceful, and untroubled.",
+      "synonyms": ["peace", "calm", "tranquility"],
+      "example": "She meditated every morning to maintain her serenity."
+    },
+    {
+      "id": 59,
+      "word": "Advancement",
+      "partOfSpeech": "noun",
+      "meaning": "The process of moving forward or making progress.",
+      "synonyms": ["progress", "improvement", "development"],
+      "example": "The company's advancement in technology has led to great success."
+    },
+    {
+      "id": 60,
+      "word": "Innovation",
+      "partOfSpeech": "noun",
+      "meaning": "The act or process of introducing new ideas, methods, or devices.",
+      "synonyms": ["creativity", "novelty", "invention"],
+      "example": "Innovation in medicine has saved countless lives."
+    },
+    {
+      "id": 61,
+      "word": "Caring",
+      "partOfSpeech": "adjective",
+      "meaning": "Displaying kindness and concern for others.",
+      "synonyms": ["compassionate", "thoughtful", "considerate"],
+      "example": "The nurses were caring and attentive to the patients' needs."
+    },
+    {
+      "id": 62,
+      "word": "Patriotism",
+      "partOfSpeech": "noun",
+      "meaning": "The quality of being patriotic; devotion to and vigorous support for one's country.",
+      "synonyms": ["nationalism", "loyalty", "devotion"],
+      "example": "His patriotism inspired him to volunteer for the national cause."
+    },
+    {
+      "id": 63,
+      "word": "Integrity",
+      "partOfSpeech": "noun",
+      "meaning": "The quality of being honest and having strong moral principles.",
+      "synonyms": ["honesty", "ethics", "uprightness"],
+      "example": "He acted with integrity, even when no one was watching."
+    },
+    {
+      "id": 64,
+      "word": "Noble",
+      "partOfSpeech": "adjective",
+      "meaning": "Having or showing fine personal qualities or high moral principles.",
+      "synonyms": ["honorable", "righteous", "virtuous"],
+      "example": "She is known for her noble efforts to help the less fortunate."
+    },
+    {
+      "id": 65,
+      "word": "Support",
+      "partOfSpeech": "noun",
+      "meaning": "Assistance or encouragement given to someone or something.",
+      "synonyms": ["assistance", "help", "aid"],
+      "example": "He offered his full support to the new initiative."
+    },
+    {
+      "id": 66,
+      "word": "Sacrifice",
+      "partOfSpeech": "noun",
+      "meaning": "The act of giving up something valued for the sake of something else regarded as more important or worthy.",
+      "synonyms": ["selflessness", "offering", "forfeiture"],
+      "example": "Her sacrifice for the team was greatly appreciated."
+    },
+    {
+      "id": 67,
+      "word": "Victory",
+      "partOfSpeech": "noun",
+      "meaning": "An act of defeating an enemy or opponent in a battle, game, or other competition.",
+      "synonyms": ["win", "triumph", "conquest"],
+      "example": "The team celebrated their victory after the match."
+    }
+  ]
+                    

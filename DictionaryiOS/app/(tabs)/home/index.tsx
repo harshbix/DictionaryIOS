@@ -1,15 +1,52 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+// Enhanced HomeScreen.js
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import wordsData from '../../../assets/data/words.json'; // adjust path as needed
+
+const quotes = [
+  "Words are, in my not-so-humble opinion, our most inexhaustible source of magic.",
+  "Language is the roadmap of a culture.",
+  "A different language is a different vision of life.",
+  "To have another language is to possess a second soul.",
+  "Words can inspire. And words can destroy. Choose yours well."
+];
 
 const HomeScreen = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [randomQuote, setRandomQuote] = useState('');
+  const [filteredWords, setFilteredWords] = useState([]);
+
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    setRandomQuote(quotes[randomIndex]);
+  }, []);
+
+  useEffect(() => {
+    if (searchText.trim() === '') {
+      setFilteredWords([]);
+    } else {
+      const results = wordsData.filter(word =>
+        word.title.toLowerCase().includes(searchText.toLowerCase())
+      );
+      setFilteredWords(results);
+    }
+  }, [searchText]);
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
     setSearchText('');
+    setFilteredWords([]);
   };
 
   const renderSaveButton = () => (
@@ -20,8 +57,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
-        {/* Header with Search */}
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <View style={styles.header}>
           {searchOpen ? (
             <TextInput
@@ -45,7 +81,19 @@ const HomeScreen = () => {
           </View>
         </View>
 
-        {/* Word of the Day Section */}
+        {searchOpen && filteredWords.length > 0 && (
+          <FlatList
+            data={filteredWords}
+            keyExtractor={(item, index) => item.title + index}
+            renderItem={({ item }) => (
+              <View style={styles.searchResultCard}>
+                <Text style={styles.wordTitle}>{item.title}</Text>
+                <Text style={styles.wordDefinition}>{item.definition}</Text>
+              </View>
+            )}
+          />
+        )}
+
         <View style={styles.wordCard}>
           <View style={styles.cardHeader}>
             <Text style={styles.sectionTitle}>Word of the Day</Text>
@@ -59,26 +107,13 @@ const HomeScreen = () => {
           </View>
         </View>
 
-        {/* Trending Words Section */}
-        <View>
-          <Text style={styles.sectionTitle}>Trending Words</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.trendingScroll}>
-            {[
-              { title: 'Serendipity', def: 'Finding something good without looking for it' },
-              { title: 'Ephemeral', def: 'Lasting for a very short time' },
-              { title: 'Mellifluous', def: 'Sweet or musical; pleasant to hear' },
-              { title: 'Luminescent', def: 'Emitting light' }
-            ].map((item, index) => (
-              <View key={index} style={styles.trendingCard}>
-                <View style={styles.cardHeader}>
-                  <Text style={styles.trendingTitle}>{item.title}</Text>
-                  {renderSaveButton()}
-                </View>
-                <Text style={styles.trendingDesc}>{item.def}</Text>
-              </View>
-            ))}
-          </ScrollView>
+        <View style={styles.quoteCard}>
+          <Text style={styles.sectionTitle}>Daily Quote</Text>
+          <Text style={styles.quoteText}>“{randomQuote}”</Text>
         </View>
+
+        {/* More UI sections can be added below (e.g., Recently Added, Fun Fact) */}
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -121,7 +156,6 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 8,
     fontSize: 16,
-    flexGrow: 1,
   },
   wordCard: {
     backgroundColor: '#FFFFFF',
@@ -156,32 +190,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#6B7280',
   },
-  trendingScroll: {
-    flexDirection: 'row',
-    marginTop: 12,
-  },
-  trendingCard: {
-    width: 180,
-    backgroundColor: '#FFFFFF',
+  quoteCard: {
+    backgroundColor: '#EEF2FF',
+    padding: 16,
     borderRadius: 12,
+    marginBottom: 24,
+  },
+  quoteText: {
+    fontStyle: 'italic',
+    fontSize: 16,
+    color: '#374151',
+  },
+  searchResultCard: {
+    backgroundColor: '#FFF',
     padding: 12,
-    marginRight: 16,
-    borderColor: '#E5E7EB',
-    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 10,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
-  },
-  trendingTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#1F2937',
-  },
-  trendingDesc: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginTop: 8,
   },
   saveButton: {
     padding: 6,
