@@ -1,34 +1,58 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'; // Navigation hook
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [wordData] = useState([
+    { title: 'Serendipity', def: 'Finding something good without looking for it' },
+    { title: 'Ephemeral', def: 'Lasting for a very short time' },
+    { title: 'Mellifluous', def: 'Sweet or musical; pleasant to hear' },
+    { title: 'Luminescent', def: 'Emitting light' }
+  ]);
+  const [filteredData, setFilteredData] = useState(wordData);
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
     setSearchText('');
   };
 
-  const renderSaveButton = () => (
-    <TouchableOpacity style={styles.saveButton}>
-      <Feather name="bookmark" size={18} color="#1F2937" />
+  const handleSearch = (text: string) => {
+    setSearchText(text);
+    const filtered = wordData.filter(word =>
+      word.title.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredData(filtered);
+  };
+
+  const handleWordSelect = (word: { title: string; def: string }) => {
+    navigation.navigate('WordDetail', { word });
+  };
+
+  const renderWordItem = ({ item }) => (
+    <TouchableOpacity activeOpacity={0.7} onPress={() => handleWordSelect(item)}>
+      <View style={styles.wordCard}>
+        <Text style={styles.wordTitle}>{item.title}</Text>
+        <Text style={styles.wordDefinition}>{item.def}</Text>
+      </View>
     </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.container}>
         {/* Header with Search */}
         <View style={styles.header}>
           {searchOpen ? (
             <TextInput
               style={styles.searchInput}
-              placeholder="Search words..."
+              placeholder="Search for words..."
               value={searchText}
-              onChangeText={setSearchText}
+              onChangeText={handleSearch}
               autoFocus
             />
           ) : (
@@ -45,41 +69,15 @@ const HomeScreen = () => {
           </View>
         </View>
 
-        {/* Word of the Day Section */}
-        <View style={styles.wordCard}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.sectionTitle}>Word of the Day</Text>
-            {renderSaveButton()}
-          </View>
-          <View>
-            <Text style={styles.wordTitle}>Petrichor</Text>
-            <Text style={styles.wordDefinition}>
-              The pleasant smell that follows rain falling on dry ground
-            </Text>
-          </View>
-        </View>
-
-        {/* Trending Words Section */}
-        <View>
-          <Text style={styles.sectionTitle}>Trending Words</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.trendingScroll}>
-            {[
-              { title: 'Serendipity', def: 'Finding something good without looking for it' },
-              { title: 'Ephemeral', def: 'Lasting for a very short time' },
-              { title: 'Mellifluous', def: 'Sweet or musical; pleasant to hear' },
-              { title: 'Luminescent', def: 'Emitting light' }
-            ].map((item, index) => (
-              <View key={index} style={styles.trendingCard}>
-                <View style={styles.cardHeader}>
-                  <Text style={styles.trendingTitle}>{item.title}</Text>
-                  {renderSaveButton()}
-                </View>
-                <Text style={styles.trendingDesc}>{item.def}</Text>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-      </ScrollView>
+        {/* Word List Section */}
+        <Text style={styles.sectionTitle}>Words</Text>
+        <FlatList
+          data={filteredData}
+          keyExtractor={(item) => item.title}
+          renderItem={renderWordItem}
+          contentContainerStyle={styles.wordList}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -123,27 +121,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flexGrow: 1,
   },
-  wordCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 24,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 4 },
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
     color: '#1F2937',
     marginBottom: 8,
+  },
+  wordList: {
+    marginBottom: 24,
+  },
+  wordCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 12,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
   },
   wordTitle: {
     fontSize: 22,
@@ -155,37 +151,5 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 16,
     color: '#6B7280',
-  },
-  trendingScroll: {
-    flexDirection: 'row',
-    marginTop: 12,
-  },
-  trendingCard: {
-    width: 180,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 12,
-    marginRight: 16,
-    borderColor: '#E5E7EB',
-    borderWidth: 1,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  trendingTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#1F2937',
-  },
-  trendingDesc: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginTop: 8,
-  },
-  saveButton: {
-    padding: 6,
-    borderRadius: 6,
-    backgroundColor: '#F3F4F6',
   },
 });
