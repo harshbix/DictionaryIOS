@@ -304,7 +304,7 @@
     "example": "She expressed her gratitude for the support she received."
   },
   {
-    "id": 44,
+    "id": 103,
     "word": "Empathy",
     "partOfSpeech": "noun",
     "meaning": "The ability to understand and share the feelings of another.",
@@ -320,7 +320,7 @@
     "example": "Integrity is a core value of our organization."
   },
     {
-      "id": 42,
+      "id": 101,
       "word": "Motivation",
       "partOfSpeech": "noun",
       "meaning": "The reason or reasons one has for acting or behaving in a particular way.",
@@ -328,7 +328,7 @@
       "example": "Her motivation to succeed was evident in her hard work."
     },
     {
-      "id": 43,
+      "id": 105,
       "word": "Persistence",
       "partOfSpeech": "noun",
       "meaning": "Firm or obstinate continuance in a course of action in spite of difficulty or opposition.",
@@ -336,7 +336,7 @@
       "example": "Persistence is crucial to overcoming obstacles."
     },
     {
-      "id": 44,
+      "id": 104,
       "word": "Success",
       "partOfSpeech": "noun",
       "meaning": "The accomplishment of an aim or purpose.",
@@ -344,7 +344,7 @@
       "example": "Success is the result of hard work and dedication."
     },
     {
-      "id": 45,
+      "id": 102,
       "word": "Gratitude",
       "partOfSpeech": "noun",
       "meaning": "The quality of being thankful; readiness to show appreciation for and to return kindness.",
