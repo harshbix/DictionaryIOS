@@ -1,10 +1,10 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import HomeScreen from './home/homeScreen';
-import SavedScreen from './saved/SavedScreen';
-import WordListScreen from './words/WordsScreen';
-import SettingsScreen from './settings/SettingScreen';
+import HomeScreen from './home';
+import SavedScreen from './saved';
+import WordListScreen from './words';
+import SettingsScreen from './settings';
 
 const Tab = createBottomTabNavigator();
 
