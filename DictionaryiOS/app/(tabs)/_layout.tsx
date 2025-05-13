@@ -1,26 +1,26 @@
-import React from 'react'; // Make sure React is imported
+import React from 'react';
 import { Tabs } from 'expo-router';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 // Tab configuration
 const tabScreens = [
   {
-    name: 'home',
+    name: 'home/index',
     title: 'Home',
     icon: <Feather name="home" size={22} />,
   },
   {
-    name: 'saved',
+    name: 'saved/index',
     title: 'Saved',
     icon: <Feather name="bookmark" size={22} />,
   },
   {
-    name: 'words',
+    name: 'words/index',
     title: 'Words',
     icon: <MaterialCommunityIcons name="book-outline" size={22} />,
   },
   {
-    name: 'settings',
+    name: 'settings/index',
     title: 'Settings',
     icon: <Feather name="settings" size={22} />,
   },
@@ -47,7 +47,7 @@ export default function TabLayout() {
       {tabScreens.map(({ name, title, icon }) => (
         <Tabs.Screen
           key={name}
-          name={`${name}/index`} // ensure you are pointing to the correct file
+          name={name} // Use just the screen name
           options={{
             title,
             tabBarIcon: ({ color, size }) =>
