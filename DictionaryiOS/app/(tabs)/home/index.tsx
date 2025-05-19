@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -7,51 +7,144 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import words from '../../../assets/data/words.json';
+import { ThemeContext } from '../../../context/ThemeContext';
+import { NotificationContext } from '../../../context/NotificationContext';
+import { useFonts } from '../../../hooks/useFonts';
 
 const { width } = Dimensions.get('window');
 
-const quotes = [
-  'The best way to get started is to quit talking and begin doing.',
-  'Success is not the key to happiness. Happiness is the key to success.',
-  'Push yourself, because no one else is going to do it for you.',
-  'Believe you can and you’re halfway there.',
-  'Dream it. Wish it. Do it.',
-];
-
-const getRandomQuote = () => {
-  const index = Math.floor(Math.random() * quotes.length);
-  return quotes[index];
-};
-
-const getRandomWords = (count = 5) => {
-  const shuffled = [...words].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
-};
-
 const HomeScreen = () => {
+  const { theme, fontSizeMultiplier } = useContext(ThemeContext);
+  const { pushNotificationsEnabled } = useContext(NotificationContext);
+  const { fontLoaded } = useFonts();
+
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [quote, setQuote] = useState('');
-  const [trendingWords, setTrendingWords] = useState<{ id: number; word: string; partOfSpeech: string; meaning: string; synonyms: string[]; example: string; }[]>([]);
+  const [wordOfTheDay, setWordOfTheDay] = useState(words[0]);
+  const [trendingWords, setTrendingWords] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [savedWords, setSavedWords] = useState({});
 
   useEffect(() => {
-    setQuote(getRandomQuote());
-    const trending = words.slice(0, 5);
-    setTrendingWords(trending.length ? trending : getRandomWords());
-  }, []);
+    const initializeData = async () => {
+      try {
+        setIsLoading(true);
+        const storedQuote = await AsyncStorage.getItem('dailyQuote');
+        const lastQuoteDate = await AsyncStorage.getItem('lastQuoteDate');
+        const today = new Date().toDateString();
+
+        if (storedQuote && lastQuoteDate === today) {
+          setQuote(storedQuote);
+        } else {
+          const newQuote = getRandomQuote();
+          setQuote(newQuote);
+          await AsyncStorage.setItem('dailyQuote', newQuote);
+          await AsyncStorage.setItem('lastQuoteDate', today);
+        }
+
+        const storedWordOfDay = await AsyncStorage.getItem('wordOfTheDay');
+        const lastWordDate = await AsyncStorage.getItem('lastWordDate');
+
+        if (storedWordOfDay && lastWordDate === today) {
+          setWordOfTheDay(JSON.parse(storedWordOfDay));
+        } else {
+          const randomIndex = Math.floor(Math.random() * words.length);
+          const todayWord = words[randomIndex];
+          setWordOfTheDay(todayWord);
+          await AsyncStorage.setItem('wordOfTheDay', JSON.stringify(todayWord));
+          await AsyncStorage.setItem('lastWordDate', today);
+        }
+
+        setTrendingWords(getRandomWords(5));
+
+        const storedSavedWords = await AsyncStorage.getItem('savedWords');
+        if (storedSavedWords) {
+          setSavedWords(JSON.parse(storedSavedWords));
+        }
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error initializing data:', error);
+        setIsLoading(false);
+      }
+    };
+
+    initializeData();
+
+    if (pushNotificationsEnabled) {
+      setupWordOfDayNotification();
+    }
+  }, [pushNotificationsEnabled]);
+
+  const getRandomQuote = () => {
+    const quotes = [
+      'Success is not the key to happiness. Happiness is the key to success.',
+      'Push yourself, because no one else is going to do it for you.',
+      'Believe you can and you\'re halfway there.',
+      'Dream it. Wish it. Do it.',
+    ];
+    
+    const index = Math.floor(Math.random() * quotes.length);
+    return quotes[index];
+  };
+
+  const getRandomWords = (count = 5) => {
+    const shuffled = [...words].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  };
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
-    setSearchText('');
+    if (searchOpen) {
+      setSearchText('');
+    }
   };
 
-  const renderSaveButton = () => (
-    <TouchableOpacity style={styles.saveButton}>
-      <Feather name="bookmark" size={18} color="#1F2937" />
+  const setupWordOfDayNotification = () => {
+    console.log('Setting up word of day notification');
+  };
+
+  const toggleSaveWord = async (word) => {
+    try {
+      const updatedSavedWords = { ...savedWords };
+
+      if (updatedSavedWords[word.id]) {
+        delete updatedSavedWords[word.id];
+      } else {
+        updatedSavedWords[word.id] = word;
+      }
+
+      setSavedWords(updatedSavedWords);
+      await AsyncStorage.setItem('savedWords', JSON.stringify(updatedSavedWords));
+    } catch (error) {
+      console.error('Error saving word:', error);
+    }
+  };
+
+  const isWordSaved = (wordId) => {
+    return savedWords[wordId] !== undefined;
+  };
+
+  const renderSaveButton = (word) => (
+    <TouchableOpacity
+      style={[
+        styles.saveButton,
+        { backgroundColor: theme.cardBackgroundSecondary },
+      ]}
+      onPress={() => toggleSaveWord(word)}
+    >
+      <Feather
+        name={isWordSaved(word.id) ? 'bookmark' : 'bookmark-outline'}
+        size={18}
+        color={isWordSaved(word.id) ? theme.accentColor : theme.textSecondary}
+      />
     </TouchableOpacity>
   );
 
@@ -61,61 +154,164 @@ const HomeScreen = () => {
       )
     : [];
 
+  if (!fontLoaded || isLoading) {
+    return (
+      <SafeAreaView style={[styles.loadingContainer, { backgroundColor: theme.backgroundColor }]}>
+        <ActivityIndicator size="large" color={theme.accentColor} />
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.backgroundColor }]}>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           {searchOpen ? (
             <TextInput
-              style={styles.searchInput}
+              style={[
+                styles.searchInput,
+                {
+                  borderColor: theme.borderColor,
+                  color: theme.textPrimary,
+                  fontSize: 16 * fontSizeMultiplier,
+                },
+              ]}
               placeholder="Search words..."
+              placeholderTextColor={theme.textSecondary}
               value={searchText}
               onChangeText={setSearchText}
               autoFocus
-              placeholderTextColor="#9CA3AF"
             />
           ) : (
-            <Text style={styles.title}>📘 WordWise</Text>
+            <Text style={[
+              styles.title,
+              {
+                color: theme.textPrimary,
+                fontSize: 24 * fontSizeMultiplier,
+              },
+            ]}>📘 WordWise</Text>
           )}
 
           <View style={styles.headerIcons}>
             <TouchableOpacity onPress={toggleSearch} style={styles.iconWrapper}>
-              <Feather name={searchOpen ? 'x' : 'search'} size={20} color="black" />
+              <Feather
+                name={searchOpen ? 'x' : 'search'}
+                size={20}
+                color={theme.textPrimary}
+              />
             </TouchableOpacity>
             <TouchableOpacity style={styles.iconWrapper}>
-              <MaterialCommunityIcons name="microphone-outline" size={20} color="black" />
+              <MaterialCommunityIcons
+                name="microphone-outline"
+                size={20}
+                color={theme.textPrimary}
+              />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Word of the Day */}
-        <View style={styles.wordCard}>
+        <View style={[
+          styles.wordCard,
+          {
+            backgroundColor: theme.cardBackground,
+            shadowColor: theme.shadowColor,
+          },
+        ]}>
           <View style={styles.cardHeader}>
-            <Text style={styles.sectionTitle}>✨ Word of the Day</Text>
-            {renderSaveButton()}
+            <Text style={[
+              styles.sectionTitle,
+              {
+                color: theme.textPrimary,
+                fontSize: 18 * fontSizeMultiplier,
+              },
+            ]}>✨ Word of the Day</Text>
+            {renderSaveButton(wordOfTheDay)}
           </View>
-          <Text style={styles.wordTitle}>{words[0].word}</Text>
-          <Text style={styles.wordDefinition}>{words[0].meaning}</Text>
+          <Text style={[
+            styles.wordTitle,
+            {
+              color: theme.textPrimary,
+              fontSize: 22 * fontSizeMultiplier,
+            },
+          ]}>{wordOfTheDay.word}</Text>
+          <Text style={[
+            styles.wordDefinition,
+            {
+              color: theme.textSecondary,
+              fontSize: 16 * fontSizeMultiplier,
+            },
+          ]}>{wordOfTheDay.meaning}</Text>
         </View>
 
         {/* Daily Quote */}
-        <View style={styles.quoteCard}>
-          <Text style={styles.sectionTitle}>🧠 Daily Quote</Text>
-          <Text style={styles.quoteText}>"{quote}"</Text>
+        <View style={[
+          styles.quoteCard,
+          {
+            backgroundColor: theme.cardBackgroundAccent,
+            shadowColor: theme.shadowColor,
+          },
+        ]}>
+          <Text style={[
+            styles.sectionTitle,
+            {
+              color: theme.textPrimary,
+              fontSize: 18 * fontSizeMultiplier,
+            },
+          ]}>🧠 Daily Quote</Text>
+          <Text style={[
+            styles.quoteText,
+            {
+              color: theme.textAccent,
+              fontSize: 16 * fontSizeMultiplier,
+            },
+          ]}>"{quote}"</Text>
         </View>
 
         {/* Trending Words */}
         <View>
-          <Text style={styles.sectionTitle}>🔥 Trending Words</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.trendingScroll}>
+          <Text style={[
+            styles.sectionTitle,
+            {
+              color: theme.textPrimary,
+              fontSize: 18 * fontSizeMultiplier,
+            },
+          ]}>🔥 Trending Words</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.trendingScroll}
+          >
             {trendingWords.map((item) => (
-              <View key={item.id} style={styles.trendingCard}>
+              <View
+                key={item.id}
+                style={[
+                  styles.trendingCard,
+                  {
+                    backgroundColor: theme.cardBackground,
+                    borderColor: theme.borderColor,
+                    shadowColor: theme.shadowColor,
+                  },
+                ]}
+              >
                 <View style={styles.cardHeader}>
-                  <Text style={styles.trendingTitle}>{item.word}</Text>
-                  {renderSaveButton()}
+                  <Text style={[
+                    styles.trendingTitle,
+                    {
+                      color: theme.textPrimary,
+                      fontSize: 18 * fontSizeMultiplier,
+                    },
+                  ]}>{item.word}</Text>
+                  {renderSaveButton(item)}
                 </View>
-                <Text style={styles.trendingDesc}>{item.meaning}</Text>
+                <Text style={[
+                  styles.trendingDesc,
+                  {
+                    color: theme.textSecondary,
+                    fontSize: 14 * fontSizeMultiplier,
+                  },
+                ]}>{item.meaning}</Text>
               </View>
             ))}
           </ScrollView>
@@ -124,18 +320,55 @@ const HomeScreen = () => {
         {/* Search Results */}
         {searchText.length > 0 && (
           <View style={{ marginTop: 24 }}>
-            <Text style={styles.sectionTitle}>🔍 Search Results</Text>
+            <Text style={[
+              styles.sectionTitle,
+              {
+                color: theme.textPrimary,
+                fontSize: 18 * fontSizeMultiplier,
+              },
+            ]}>🔍 Search Results</Text>
             {filteredWords.length === 0 ? (
-              <Text style={{ color: '#9CA3AF', fontStyle: 'italic' }}>No matches found.</Text>
+              <Text style={{
+                color: theme.textSecondary,
+                fontStyle: 'italic',
+                fontSize: 14 * fontSizeMultiplier,
+              }}>No matches found.</Text>
             ) : (
-              filteredWords.map((item) => (
-                <View key={item.id} style={styles.trendingCard}>
+              filteredWords.slice(0, 10).map((item) => (
+                <View
+                  key={item.id}
+                  style={[
+                    styles.resultCard,
+                    {
+                      backgroundColor: theme.cardBackground,
+                      borderColor: theme.borderColor,
+                      shadowColor: theme.shadowColor,
+                    },
+                  ]}
+                >
                   <View style={styles.cardHeader}>
-                    <Text style={styles.trendingTitle}>{item.word}</Text>
-                    {renderSaveButton()}
+                    <Text style={[
+                      styles.trendingTitle,
+                      {
+                        color: theme.textPrimary,
+                        fontSize: 18 * fontSizeMultiplier,
+                      },
+                    ]}>{item.word}</Text>
+                    {renderSaveButton(item)}
                   </View>
-                  <Text style={styles.trendingDesc}>{item.meaning}</Text>
-                  <Text style={{ color: '#9CA3AF', marginTop: 4 }}>
+                  <Text style={[
+                    styles.trendingDesc,
+                    {
+                      color: theme.textSecondary,
+                      fontSize: 14 * fontSizeMultiplier,
+                    },
+                  ]}>{item.meaning}</Text>
+                  <Text style={{
+                    color: theme.textSecondary,
+                    marginTop: 4,
+                    fontStyle: 'italic',
+                    fontSize: 13 * fontSizeMultiplier,
+                  }}>
                     e.g., {item.example}
                   </Text>
                 </View>
@@ -148,120 +381,114 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F3F4F6',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
     padding: 16,
-    paddingBottom: 36,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
-    marginTop: 16,
+    marginBottom: 24,
+  },
+  searchInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#111827',
+    fontWeight: 'bold',
   },
   headerIcons: {
     flexDirection: 'row',
-    gap: 12,
+    marginLeft: 12,
   },
   iconWrapper: {
     marginLeft: 12,
   },
-  searchInput: {
-    flex: 1,
-    borderBottomWidth: 2,
-    borderColor: '#D1D5DB',
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    fontSize: 16,
-    color: '#1F2937',
-  },
   wordCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 24,
-    marginBottom: 24,
-    elevation: 4,
-    shadowColor: '#000',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-  },
-  quoteCard: {
-    backgroundColor: '#E0F2FE',
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 24,
+    shadowRadius: 4,
+    elevation: 3,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 6,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 8,
+    fontWeight: '600',
   },
   wordTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#1F2937',
-    marginTop: 12,
+    fontWeight: 'bold',
+    marginBottom: 4,
   },
   wordDefinition: {
-    marginTop: 8,
-    fontSize: 16,
-    color: '#4B5563',
+    fontStyle: 'italic',
+  },
+  quoteCard: {
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   quoteText: {
-    marginTop: 12,
-    fontSize: 16,
+    marginTop: 8,
     fontStyle: 'italic',
-    color: '#1E3A8A',
   },
   trendingScroll: {
-    flexDirection: 'row',
-    marginTop: 12,
+    marginVertical: 12,
   },
   trendingCard: {
-    width: width * 0.6,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
-    marginRight: 16,
-    borderColor: '#E5E7EB',
+    padding: 12,
+    borderRadius: 12,
+    marginRight: 12,
+    width: width * 0.7,
     borderWidth: 1,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
   },
   trendingTitle: {
-    fontSize: 18,
     fontWeight: '600',
-    color: '#1F2937',
   },
   trendingDesc: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginTop: 8,
+    marginTop: 6,
+    fontStyle: 'italic',
+  },
+  resultCard: {
+    padding: 12,
+    borderRadius: 10,
+    marginVertical: 6,
+    borderWidth: 1,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
   },
   saveButton: {
     padding: 6,
     borderRadius: 8,
-    backgroundColor: '#F9FAFB',
   },
 });
+
+export default HomeScreen;
