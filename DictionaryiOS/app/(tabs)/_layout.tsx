@@ -1,6 +1,7 @@
 import React, { JSX } from 'react';
 import { Tabs } from 'expo-router';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Define tab screen type
 type TabScreen = {
@@ -33,18 +34,13 @@ const tabScreens: TabScreen[] = [
   },
 ];
 
-// Extract styles into constants
+// Styles
 const tabBarStyle = {
   backgroundColor: '#fff',
   borderTopColor: '#E5E7EB',
   borderTopWidth: 0.5,
   height: 65,
   paddingTop: 5,
-};
-
-const tabBarLabelStyle = {
-  fontSize: 11,
-  fontWeight: 'bold',
 };
 
 // Function to render tab icons
@@ -54,24 +50,26 @@ const renderTabIcon = (icon: JSX.Element, color: string, size: number) =>
 // Tab layout component
 export default function TabLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: '#1F2937',
-        tabBarInactiveTintColor: '#9CA3AF',
-        tabBarStyle,
-      }}
-    >
-      {tabScreens.map(({ name, title, icon }) => (
-        <Tabs.Screen
-          key={name}
-          name={name}
-          options={{
-            title,
-            tabBarIcon: ({ color, size }) => renderTabIcon(icon, color, size),
-          }}
-        />
-      ))}
-    </Tabs>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: '#1F2937',
+          tabBarInactiveTintColor: '#9CA3AF',
+          tabBarStyle,
+        }}
+      >
+        {tabScreens.map(({ name, title, icon }) => (
+          <Tabs.Screen
+            key={name}
+            name={name}
+            options={{
+              title,
+              tabBarIcon: ({ color, size }) => renderTabIcon(icon, color, size),
+            }}
+          />
+        ))}
+      </Tabs>
+    </GestureHandlerRootView>
   );
 }
