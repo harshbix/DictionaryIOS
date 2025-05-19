@@ -10,27 +10,66 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+// Import icons separately to avoid undefined module errors
+import { Feather } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// Import words directly from the source
 import words from '../../../assets/data/words.json';
 import { ThemeContext } from '../../../context/ThemeContext';
 import { NotificationContext } from '../../../context/NotificationContext';
-import { useFonts } from '../../../hooks/useFonts';
+// Use expo-font directly instead of a custom hook that might be missing
+import * as Font from 'expo-font';
 
+// Import the saveWordToFavorites function
+import { saveWordToFavorites } from '../../../utils/saveWordToFavorites'; // Adjust the path as needed
+
+const FAVORITES_KEY = '@favorite_words'; // Match the key used in saveWordToFavorites
 const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
-  const { theme, fontSizeMultiplier } = useContext(ThemeContext);
-  const { pushNotificationsEnabled } = useContext(NotificationContext);
-  const { fontLoaded } = useFonts();
-
+  const { theme, fontSizeMultiplier = 1 } = useContext(ThemeContext) || { theme: {} };
+  const { pushNotificationsEnabled = false } = useContext(NotificationContext) || {};
+  
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [quote, setQuote] = useState('');
-  const [wordOfTheDay, setWordOfTheDay] = useState(words[0]);
-  const [trendingWords, setTrendingWords] = useState([]);
+  const [wordOfTheDay, setWordOfTheDay] = useState(words[0] || {});
+  const [trendingWords, setTrendingWords] = useState<{ id: number; word: string; partOfSpeech: string; meaning: string; synonyms: string[]; example: string; }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [savedWords, setSavedWords] = useState({});
+  const [favoriteWords, setFavoriteWords] = useState<{ id: number; word: string; partOfSpeech: string; meaning: string; synonyms: string[]; example: string; }[]>([]);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  // Load fonts manually
+  useEffect(() => {
+    async function loadFonts() {
+      try {
+        await Font.loadAsync({
+          // Default system font if custom font is not available
+          'system-font': require('expo-font/build/FontLoader').FontLoader.resolveAsync()
+        });
+        setFontsLoaded(true);
+      } catch (error) {
+        console.log('Error loading fonts:', error);
+        // Continue without custom fonts
+        setFontsLoaded(true);
+      }
+    }
+    
+    loadFonts();
+  }, []);
+
+  // Load favorite words from AsyncStorage
+  const loadFavoriteWords = async () => {
+    try {
+      const storedFavorites = await AsyncStorage.getItem(FAVORITES_KEY);
+      if (storedFavorites) {
+        setFavoriteWords(JSON.parse(storedFavorites));
+      }
+    } catch (error) {
+      console.error('Error loading favorite words:', error);
+    }
+  };
 
   useEffect(() => {
     const initializeData = async () => {
@@ -64,10 +103,8 @@ const HomeScreen = () => {
 
         setTrendingWords(getRandomWords(5));
 
-        const storedSavedWords = await AsyncStorage.getItem('savedWords');
-        if (storedSavedWords) {
-          setSavedWords(JSON.parse(storedSavedWords));
-        }
+        // Load favorite words using the new approach
+        await loadFavoriteWords();
 
         setIsLoading(false);
       } catch (error) {
@@ -108,31 +145,41 @@ const HomeScreen = () => {
   };
 
   const setupWordOfDayNotification = () => {
+    // Implementation would go here - using console log for now
     console.log('Setting up word of day notification');
   };
 
-  const toggleSaveWord = async (word) => {
+  // Modified toggleSaveWord function that uses saveWordToFavorites
+  const toggleSaveWord = async (word: { id: number; word: string; partOfSpeech: string; meaning: string; synonyms: string[]; example: string; }) => {
     try {
-      const updatedSavedWords = { ...savedWords };
-
-      if (updatedSavedWords[word.id]) {
-        delete updatedSavedWords[word.id];
+      // Check if the word is already in favorites
+      const isCurrentlyFavorited = isWordSaved(word.id);
+      
+      if (isCurrentlyFavorited) {
+        // Remove the word from favorites
+        const updatedFavorites = favoriteWords.filter(fav => fav.id !== word.id);
+        setFavoriteWords(updatedFavorites);
+        await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites));
       } else {
-        updatedSavedWords[word.id] = word;
+        // Add the word to favorites using the new function
+        await saveWordToFavorites({ 
+          id: word.id.toString(), 
+          text: word.word 
+        });
+        // Refresh the favorites list
+        await loadFavoriteWords();
       }
-
-      setSavedWords(updatedSavedWords);
-      await AsyncStorage.setItem('savedWords', JSON.stringify(updatedSavedWords));
     } catch (error) {
-      console.error('Error saving word:', error);
+      console.error('Error toggling favorite word:', error);
     }
   };
 
-  const isWordSaved = (wordId) => {
-    return savedWords[wordId] !== undefined;
+  // Modified isWordSaved function to work with the array of favorite words
+  const isWordSaved = (wordId: number) => {
+    return favoriteWords.some(word => word.id === wordId);
   };
 
-  const renderSaveButton = (word) => (
+  const renderSaveButton = (word: { id: number; word: string; partOfSpeech: string; meaning: string; synonyms: string[]; example: string; }) => (
     <TouchableOpacity
       style={[
         styles.saveButton,
@@ -140,11 +187,12 @@ const HomeScreen = () => {
       ]}
       onPress={() => toggleSaveWord(word)}
     >
-      <Feather
-        name={isWordSaved(word.id) ? 'bookmark' : 'bookmark-outline'}
-        size={18}
-        color={isWordSaved(word.id) ? theme.accentColor : theme.textSecondary}
-      />
+      {/* Use conditional rendering instead of conditional name prop */}
+      {isWordSaved(word.id) ? (
+        <Feather name="bookmark" size={18} color={theme.accentColor} />
+      ) : (
+        <Feather name="bookmark" size={18} color={theme.textSecondary} />
+      )}
     </TouchableOpacity>
   );
 
@@ -154,10 +202,15 @@ const HomeScreen = () => {
       )
     : [];
 
-  if (!fontLoaded || isLoading) {
+  const handleVoiceSearch = () => {
+    // Implementation for voice search would go here
+    console.log('Voice search activated');
+  };
+
+  if (!fontsLoaded || isLoading) {
     return (
       <SafeAreaView style={[styles.loadingContainer, { backgroundColor: theme.backgroundColor }]}>
-        <ActivityIndicator size="large" color={theme.accentColor} />
+        <ActivityIndicator size="large" color={theme.accentColor || '#0000ff'} />
       </SafeAreaView>
     );
   }
@@ -201,7 +254,7 @@ const HomeScreen = () => {
                 color={theme.textPrimary}
               />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconWrapper}>
+            <TouchableOpacity style={styles.iconWrapper} onPress={handleVoiceSearch}>
               <MaterialCommunityIcons
                 name="microphone-outline"
                 size={20}
@@ -263,7 +316,7 @@ const HomeScreen = () => {
           <Text style={[
             styles.quoteText,
             {
-              color: theme.textAccent,
+              color: theme.textAccent || theme.textPrimary,
               fontSize: 16 * fontSizeMultiplier,
             },
           ]}>"{quote}"</Text>
