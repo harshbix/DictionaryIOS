@@ -1,6 +1,6 @@
 import React, { JSX } from 'react';
 import { Tabs } from 'expo-router';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Define tab screen type
@@ -20,7 +20,7 @@ const tabScreens: TabScreen[] = [
   {
     name: 'saved/index',
     title: 'Saved',
-    icon: <Feather name="bookmark" size={22} />,
+    icon: <Ionicons name="heart" size={22} />,
   },
   {
     name: 'words/index',
@@ -34,13 +34,21 @@ const tabScreens: TabScreen[] = [
   },
 ];
 
-// Styles
+// Dark theme styles
 const tabBarStyle = {
-  backgroundColor: '#fff',
-  borderTopColor: '#E5E7EB',
+  backgroundColor: '#111827', // Dark gray background
+  borderTopColor: 'rgba(255,255,255,0.1)', // Subtle white border
   borderTopWidth: 0.5,
   height: 65,
   paddingTop: 5,
+  shadowColor: '#000',
+  shadowOffset: {
+    width: 0,
+    height: -2,
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+  elevation: 5,
 };
 
 // Function to render tab icons
@@ -54,9 +62,14 @@ export default function TabLayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: '#1F2937',
-          tabBarInactiveTintColor: '#9CA3AF',
+          tabBarActiveTintColor: '#3B82F6', // Blue active color
+          tabBarInactiveTintColor: 'rgba(255,255,255,0.6)', // Light gray inactive color
           tabBarStyle,
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: '500',
+            marginTop: 4,
+          },
         }}
       >
         {tabScreens.map(({ name, title, icon }) => (
